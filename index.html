@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pozadina DNK</title>
+    <style>
+        body {
+            background-image: url('https://wallup.net/wp-content/uploads/2018/09/30/898654-medical-biology-detail-medicine-psychedelic-science-abstract-abstraction-chemistry-genetics.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+        canvas { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            z-index: -1; 
+            display: block; 
+        }
+        #hromozom1, #hromozom2 {
+            position: absolute; /* Postavi slike apsolutno */
+            top: 20px; /* Razmak od vrha */
+            width: 5%; /* Širina slike */
+            cursor: pointer; /* Promeni kursor na pointer */
+        }
+        #hromozom1 {
+            left: 20px; /* Razmak od leva za hromozom 1 */
+        }
+        #hromozom2 {
+            left: 8%; /* Pomeraj hromozom 2 pored hromozoma 1 */
+        }
+        #info {
+            display: none; /* Sakrij info polje */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <img id="hromozom1" src="hromozom1.png" alt="Opis slike">
+    <img id="hromozom2" src="hromozom2.png" alt="Opis slike">
+
+    <div id="info">
+        <h2>Više informacija</h2>
+        <p>Ovo je informativni tekst o slici. Ovdje možeš dodati dodatne informacije, opis ili bilo šta drugo što želiš reći o slici.</p>
+        <button id="closeBtn">Zatvori</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/loaders/GLTFLoader.js"></script>
+
+    <script>
+        // Osnovna postavka
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Dodaj svetlo
+        const ambientLight = new THREE.AmbientLight(0xffffff);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(1, 1, 1).normalize();
+        scene.add(directionalLight);
+
+        // Učitaj GLTF model
+        const loader = new THREE.GLTFLoader();
+        loader.load('scene.gltf', function (gltf) {
+            gltf.scene.scale.set(1, 1, 1); // Podesi skalu
+            gltf.scene.position.set(0, 0, 0); // Podesi poziciju
+            scene.add(gltf.scene);
+            animate();
+        }, undefined, function (error) {
+            console.error(error);
+        });
+
+        // Postavi kameru
+        camera.position.z = 5;
+
+        // Animacija
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+
+        // Resize funkcija
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Dodaj funkcionalnost klika na slike
+        const hromozom1 = document.getElementById('hromozom1');
+        const hromozom2 = document.getElementById('hromozom2');
+        const info = document.getElementById('info');
+        const closeBtn = document.getElementById('closeBtn');
+
+        hromozom1.addEventListener('click', () => {
+            info.style.display = 'block'; // Prikaži informativno polje
+        });
+
+        hromozom2.addEventListener('click', () => {
+            info.style.display = 'block'; // Prikaži informativno polje
+        });
+
+        closeBtn.addEventListener('click', () => {
+            info.style.display = 'none'; // Sakrij informativno polje
+        });
+    </script>
+</body>
+</html>
+
